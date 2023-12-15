@@ -30,7 +30,7 @@ available (boolean) - True for products that are available for adoption
 """
 import logging
 from enum import Enum
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -145,6 +145,8 @@ class Product(db.Model):
             raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
             raise DataValidationError("Invalid product: missing " + error.args[0]) from error
+        except InvalidOperation as error:
+            raise DataValidationError("Invalid product price") from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid product: body of request contained bad or no data " + str(error)
